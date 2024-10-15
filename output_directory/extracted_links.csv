@@ -1,0 +1,4 @@
+text,url,page,position,metadata
+http://en.wikibooks.org/,http://en.wikibooks.org/,1,"{'x0': 491.6437072753906, 'y0': 214.0780029296875, 'x1': 538.3936767578125, 'y1': 227.27801513671875}","{'source': '/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf', 'description': 'Link from page 1'}"
+http://en.wikibooks.org/wiki/Sensory_Systems,http://en.wikibooks.org/wiki/Sensory_Systems,1,"{'x0': 399.0126953125, 'y0': 227.27801513671875, 'x1': 479.7087097167969, 'y1': 240.47799682617188}","{'source': '/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf', 'description': 'Link from page 1'}"
+http://css4.pub,http://css4.pub,4,"{'x0': 154.23240661621094, 'y0': 459.6796875, 'x1': 195.96640014648438, 'y1': 472.87969970703125}","{'source': '/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf', 'description': 'Link from page 4'}"

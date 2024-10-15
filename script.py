@@ -9,7 +9,7 @@ if not os.path.exists(output_directory):
     os.makedirs(output_directory)
  
 # Specify the file path
-file_path = '/home/shtlp_0064/Desktop/Assignment_4 Python/samples/file-sample_100kB.docx'  # Change this to your target file
+file_path = '/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf'  # Change this to your target file
  
 # Determine the file type and load the appropriate loader
 if file_path.endswith('.pdf'):

@@ -2,16 +2,16 @@ import fitz  # PyMuPDF for PDF handling
 import tabula  # For PDF table extraction
 import docx  # For DOCX handling
 from pptx import Presentation  # For PPTX handling
- 
+
 class DataExtractor:
     def __init__(self, loader):
         self.loader = loader
         self.file_path = loader.file_path
- 
+
     def extract_text(self):
         """Extract text from the file."""
         text_data = []
- 
+
         if self.file_path.endswith('.pdf'):
             pdf_document = fitz.open(self.file_path)
             for page_num in range(len(pdf_document)):
@@ -19,13 +19,13 @@ class DataExtractor:
                 text_data.append(page.get_text() or "")
             pdf_document.close()
             return text_data
- 
+
         elif self.file_path.endswith('.docx'):
             doc = self.loader.load_file()
             for paragraph in doc.paragraphs:
                 text_data.append(paragraph.text + "\n")
             return text_data
- 
+
         elif self.file_path.endswith('.pptx'):
             ppt = self.loader.load_file()
             for slide in ppt.slides:
@@ -33,14 +33,14 @@ class DataExtractor:
                     if hasattr(shape, "text"):
                         text_data.append(shape.text + "\n")
             return text_data
- 
+
         else:
             raise ValueError("Unsupported file format for text extraction.")
- 
+
     def extract_images(self):
         """Extract images from the file, including metadata."""
         images_data = []
- 
+
         if self.file_path.endswith('.pdf'):
             pdf_document = fitz.open(self.file_path)
             for page_num in range(len(pdf_document)):
@@ -64,7 +64,7 @@ class DataExtractor:
                         }
                     })
             pdf_document.close()
- 
+
         elif self.file_path.endswith('.docx'):
             doc = self.loader.load_file()
             for rel in doc.part.rels:
@@ -78,7 +78,7 @@ class DataExtractor:
                             "description": "Image from DOCX file"
                         }
                     })
- 
+
         elif self.file_path.endswith('.pptx'):
             ppt = self.loader.load_file()
             for slide_num, slide in enumerate(ppt.slides):
@@ -93,13 +93,13 @@ class DataExtractor:
                                 "description": "Image from PPTX file"
                             }
                         })
- 
+
         return images_data
- 
+
     def extract_links(self):
         """Extract hyperlinks from the file, including metadata."""
         links_data = []
- 
+
         if self.file_path.endswith('.pdf'):
             pdf_document = fitz.open(self.file_path)
             for page_num in range(len(pdf_document)):
@@ -126,30 +126,46 @@ class DataExtractor:
                             }
                         })
             pdf_document.close()
- 
+
         elif self.file_path.endswith('.docx'):
             doc = self.loader.load_file()
             for rel in doc.part.rels.values():
                 if "hyperlink" in rel.target_ref:
+                    # Getting the text associated with the hyperlink
+                    hyperlink = rel.target_part
                     links_data.append({
-                        "text": rel.target_ref,
+                        "text": hyperlink.text or rel.target_ref,  # Use the text if available
                         "url": rel.target_ref,
                         "metadata": {
                             "source": self.file_path,
                             "description": "Hyperlink from DOCX file"
                         }
                     })
- 
+
         elif self.file_path.endswith('.pptx'):
-            # URLs are rare in PPTX, so skipping this part
-            pass
- 
+            ppt = self.loader.load_file()
+            for slide_num, slide in enumerate(ppt.slides):
+                for shape in slide.shapes:
+                    if hasattr(shape, "text_frame"):
+                        for paragraph in shape.text_frame.paragraphs:
+                            for run in paragraph.runs:
+                                if run.hyperlink:
+                                    links_data.append({
+                                        "text": run.text,
+                                        "url": run.hyperlink.address,
+                                        "metadata": {
+                                            "source": self.file_path,
+                                            "slide_number": slide_num + 1,
+                                            "description": "Hyperlink from PPTX file"
+                                        }
+                                    })
+
         return links_data
- 
+
     def extract_tables(self):
         """Extract tables from the file, including metadata."""
         tables_data = []
- 
+
         if self.file_path.endswith('.pdf'):
             # Extract tables from PDF using Tabula
             try:
@@ -166,7 +182,7 @@ class DataExtractor:
             except Exception as e:
                 print(f"Error extracting tables from PDF: {e}")
             return tables_data
- 
+
         elif self.file_path.endswith('.docx'):
             doc = self.loader.load_file()
             for table_index, table in enumerate(doc.tables):
@@ -179,7 +195,7 @@ class DataExtractor:
                     }
                 })
             return tables_data
- 
+
         elif self.file_path.endswith('.pptx'):
             ppt = self.loader.load_file()
             for slide_num, slide in enumerate(ppt.slides):
@@ -194,6 +210,5 @@ class DataExtractor:
                                 "description": f"Table extracted from PPTX, Slide {slide_num + 1}"
                             }
                         })
- 
+
         return tables_data
- 
