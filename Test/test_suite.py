@@ -9,7 +9,7 @@ from storage.concrete_storage import FileStorage, SQLStorage
 class TestFileLoader(unittest.TestCase):
  
     def test_pdf_file_format(self):
-        loader = PDFLoader('somatosensory.pdf')
+        loader = PDFLoader('')
         self.assertTrue(loader.validate_file())  # Check if the file is valid
  
     def test_docx_file_format(self):
@@ -68,53 +68,53 @@ class TestFileLoader(unittest.TestCase):
 class TestPDFExtraction(unittest.TestCase):
  
     def test_pdf_text_extraction(self):
-        loader = PDFLoader('somatosensory.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         text_data = extractor.extract_text()
         self.assertIsInstance(text_data, list)
         self.assertGreater(len(text_data), 0)
  
     def test_pdf_image_extraction(self):
-        loader = PDFLoader('somatosensory.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         images_data = extractor.extract_images()
         self.assertIsInstance(images_data, list)
         self.assertGreater(len(images_data), 0)
  
     def test_pdf_link_extraction(self):
-        loader = PDFLoader('somatosensory.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         links_data = extractor.extract_links()
         self.assertIsInstance(links_data, list)
         self.assertGreater(len(links_data), 0)
  
     def test_pdf_table_extraction(self):
-        loader = PDFLoader('somatosensory.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         tables_data = extractor.extract_tables()
         self.assertIsInstance(tables_data, list)
         self.assertGreater(len(tables_data), 0)
  
     def test_pdf_text_extraction_empty(self):
-        loader = PDFLoader('empty.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         text_data = extractor.extract_text()
         self.assertEqual(text_data, [])  # Ensure no text is extracted
  
     def test_pdf_link_extraction_empty(self):
-        loader = PDFLoader('empty.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         links_data = extractor.extract_links()
         self.assertEqual(links_data, [])  # Ensure no links are extracted
  
     def test_pdf_image_extraction_empty(self):
-        loader = PDFLoader('empty.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         images_data = extractor.extract_images()
         self.assertEqual(images_data, [])  # Ensure no images are extracted
  
     def test_pdf_table_extraction_empty(self):
-        loader = PDFLoader('empty.pdf')
+        loader = PDFLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf')
         extractor = DataExtractor(loader)
         tables_data = extractor.extract_tables()
         self.assertEqual(tables_data, [])  # Ensure no tables are extracted
@@ -122,14 +122,14 @@ class TestPDFExtraction(unittest.TestCase):
 class TestDOCXExtraction(unittest.TestCase):
  
     def test_docx_text_extraction(self):
-        loader = DOCXLoader('file-sample_100kB.docx')
+        loader = DOCXLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/file-sample_100kB.docx')
         extractor = DataExtractor(loader)
         text_data = extractor.extract_text()
         self.assertIsInstance(text_data, list)
         self.assertGreater(len(text_data), 0)
  
     def test_docx_image_extraction(self):
-        loader = DOCXLoader('file-sample_100kB.docx')
+        loader = DOCXLoader('/home/shtlp_0064/Desktop/Assignment_4 Python/samples/file-sample_100kB.docx')
         extractor = DataExtractor(loader)
         images_data = extractor.extract_images()
         self.assertIsInstance(images_data, list)
