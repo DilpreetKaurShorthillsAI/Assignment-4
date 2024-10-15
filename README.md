@@ -35,6 +35,20 @@ This project implements a modular Python class structure to extract text, hyperl
 - **FileStorage**: Saves extracted data to files (e.g., images to directories, tables to CSV).
 - **SQLStorage**: Stores extracted data in an SQL database.
 
+ ## Installations
+
+### Clone the repository:
+
+https://github.com/DilpreetKaurShorthillsAI/Assignment-4.git
+  
+### Navigate to the project directory:
+
+cd Assignment-4
+
+### Install dependencies: 
+
+Install all required dependencies mentioned in requirements.txt file
+
 ## Testing
 
 - Implement unit tests to validate each class and method.
