@@ -39,15 +39,62 @@ This project implements a modular Python class structure to extract text, hyperl
 
 ### Clone the repository:
 
+```
 https://github.com/DilpreetKaurShorthillsAI/Assignment-4.git
-  
+```
+
 ### Navigate to the project directory:
 
+```
 cd Assignment-4
+```
 
-### Install dependencies: 
+## Virtual environment setup
 
-Install all required dependencies mentioned in requirements.txt file
+### Installation of venev
+
+```
+sudo apt install python3.10-venv
+```
+
+### Creating a virtual environment
+
+```
+python3 -m venv venv
+```
+
+### Activate the virtual environment
+
+```
+source venv/bin/activate
+```
+## Install Dependencies
+
+Make sure your virtual environment is activated, then run:
+
+```
+pip install -r requirements.txt
+```
+## **Project Structure**
+ 
+```
+├── README.md                       # Documentation
+├── requirements.txt                # List of required Python libraries
+├── loaders/
+│   ├── file_loader.py              # Abstract base class for file loaders
+│   ├── concrete_loaders.py         # Loader class for PDF files, DOCX files, PPTX files
+│
+│   
+├── extractor/
+│   └── data_extractor.py           # Data extraction class for text, links, images, and tables
+├── storage/
+│   ├── storage.py                  # Abstract base class for storage
+│   ├── concrete_storage.py         # Class for saving data to files and SQL database
+│ 
+├── tests/
+│   └── test_suite.py               # Unit tests for extraction and storage
+└── script.py                       # Main script for running the extraction process
+```
 
 ## Testing
 
