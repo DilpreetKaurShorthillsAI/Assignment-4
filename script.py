@@ -1,75 +1,83 @@
-from loaders.concrete_loaders import PDFLoader, DOCXLoader, PPTLoader  # Make sure to use PPTLoader
+from loaders.concrete_loaders import PDFLoader, DOCXLoader, PPTLoader  # Ensure these classes are defined
 from extractor.data_extractor import DataExtractor
-from storage.concrete_storage import FileStorage, SQLStorage
+from storage.concrete_storage import FileStorage, SQLStorage  # type: ignore
 import os
  
 # Create output directory if it doesn't exist
 output_directory = 'output_directory'
-if not os.path.exists(output_directory):
-    os.makedirs(output_directory)
+os.makedirs(output_directory, exist_ok=True)
  
 # Specify the file path
 file_path = '/home/shtlp_0064/Desktop/Assignment_4 Python/samples/somatosensory.pdf'  # Change this to your target file
  
 # Determine the file type and load the appropriate loader
-if file_path.endswith('.pdf'):
-    loader = PDFLoader(file_path)
-elif file_path.endswith('.docx'):
-    loader = DOCXLoader(file_path)  # Make sure you have this class defined
-elif file_path.endswith('.pptx'):
-    loader = PPTLoader(file_path)  # Ensure PPTLoader is properly defined
+loaders = {
+    '.pdf': PDFLoader,
+    '.docx': DOCXLoader,
+    '.pptx': PPTLoader
+}
+file_extension = os.path.splitext(file_path)[1]
+ 
+if file_extension in loaders:
+    loader = loaders[file_extension](file_path)
 else:
     raise ValueError("Unsupported file format")
  
 # Initialize the DataExtractor
 extractor = DataExtractor(loader)
  
-# Extract data with error handling
-try:
-    text_data = extractor.extract_text()
-    links_data = extractor.extract_links()
-    images_data = extractor.extract_images()
-    tables_data = extractor.extract_tables()
-except Exception as e:
-    print(f"Error during data extraction: {e}")
-    exit(1)  # Exit the program if extraction fails
+# Function to extract data with error handling
+def extract_data():
+    try:
+        return {
+            'text': extractor.extract_text(),
+            'links': extractor.extract_links(),
+            'images': extractor.extract_images(),
+            'tables': extractor.extract_tables()
+        }
+    except Exception as e:
+        print(f"Error during data extraction: {e}")
+        exit(1)
  
-# Save extracted data
+# Extract data
+extracted_data = extract_data()
+ 
+# Save data with error handling
+def save_to_file(file_storage, data_type, data, file_name):
+    try:
+        if data_type == 'text':
+            file_storage.save_text_data(data, file_name)
+        elif data_type == 'links':
+            file_storage.save_links_data(data, file_name)
+        elif data_type == 'images':
+            file_storage.save_images(data)
+        elif data_type == 'tables':
+            file_storage.save_tables(data)
+    except Exception as e:
+        print(f"Error saving {data_type} data: {e}")
+ 
+# Initialize file storage
 file_storage = FileStorage(output_directory)
  
-# Save extracted text data
-try:
-    file_storage.save_text_data(text_data, "extracted_text.txt")
-except Exception as e:
-    print(f"Error saving text data: {e}")
+# Save extracted data to files
+save_to_file(file_storage, 'text', extracted_data['text'], "extracted_text.txt")
+save_to_file(file_storage, 'links', extracted_data['links'], "extracted_links.csv")
+save_to_file(file_storage, 'images', extracted_data['images'], None)  # Assuming no file name needed for images
+save_to_file(file_storage, 'tables', extracted_data['tables'], None)
  
-# Save extracted links data
-try:
-    file_storage.save_links_data(links_data, "extracted_links.csv")
-except Exception as e:
-    print(f"Error saving links data: {e}")
+# Function to save data to SQL with error handling
+def save_to_sql(sql_storage, extracted_data):
+    try:
+        sql_storage.save_text_data(extracted_data['text'])
+        sql_storage.save_links_data(extracted_data['links'])
+        sql_storage.save_images(extracted_data['images'])
+        sql_storage.save_tables(extracted_data['tables'])
+    except Exception as e:
+        print(f"Error saving data to SQL database: {e}")
  
-# Save extracted images data
-try:
-    file_storage.save_images(images_data)
-except Exception as e:
-    print(f"Error saving images: {e}")
- 
-# Save extracted tables data
-try:
-    file_storage.save_tables(tables_data)
-except Exception as e:
-    print(f"Error saving tables data: {e}")
- 
-# Save extracted data to SQL database
+# Initialize SQL storage and save extracted data to the database
 sql_storage = SQLStorage('output.db')
- 
-try:
-    sql_storage.save_text_data(text_data)
-    sql_storage.save_links_data(links_data)
-    sql_storage.save_images(images_data)
-except Exception as e:
-    print(f"Error saving data to SQL database: {e}")
+save_to_sql(sql_storage, extracted_data)
  
 # Close the database connection
 sql_storage.close()
